@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pomidor</title>
+    <!-- Иконка сайта (favicon) из интернета -->
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/5223/5223641.png">
+    <!-- Шрифт: тёплый, с характером -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ===== БАЗА ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Тёмная, но тёплая тема — глазам комфортно в темноте */
+            --bg: #1e1b19;
+            --surface: #2a2623;
+            --surface-soft: #322d29;
+            --shadow: 0 8px 20px rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 16px 32px rgba(0, 0, 0, 0.45), 0 4px 12px rgba(0, 0, 0, 0.25);
+            --text: #ece5dd;
+            --text-soft: #a89e94;
+            --accent: #e07a5f;
+            --accent-soft: #3d2b25;
+            --green: #81b29a;
+            --green-soft: #2a3a32;
+            --blue: #6b8cae;
+            --blue-soft: #25313d;
+            --border: #3d3733;
+            --radius: 24px;
+            --radius-sm: 14px;
+            --transition: 0.25s ease;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            /* Декоративный тонкий узор на фоне */
+            background-image: radial-gradient(circle at 10% 20%, rgba(224, 122, 95, 0.05) 0%, transparent 30%),
+                              radial-gradient(circle at 90% 80%, rgba(129, 178, 154, 0.05) 0%, transparent 35%);
+            background-attachment: fixed;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* ===== ДЕКОРАТИВНЫЕ ЭЛЕМЕНТЫ ФОНА (эллипсы) ===== */
+        .deco {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            filter: blur(2px);
+            opacity: 0.5;
+        }
+
+        .deco-1 {
+            width: 340px;
+            height: 340px;
+            top: -120px;
+            left: -120px;
+            background: radial-gradient(circle, rgba(224, 122, 95, 0.12) 0%, transparent 70%);
+        }
+
+        .deco-2 {
+            width: 420px;
+            height: 420px;
+            bottom: -180px;
+            right: -140px;
+            background: radial-gradient(circle, rgba(129, 178, 154, 0.10) 0%, transparent 70%);
+        }
+
+        .deco-3 {
+            width: 200px;
+            height: 200px;
+            top: 40%;
+            left: -80px;
+            background: radial-gradient(circle, rgba(107, 140, 174, 0.08) 0%, transparent 70%);
+            opacity: 0.4;
+        }
+
+        .deco-4 {
+            width: 260px;
+            height: 260px;
+            top: 10%;
+            right: -60px;
+            background: radial-gradient(circle, rgba(224, 122, 95, 0.07) 0%, transparent 70%);
+            opacity: 0.35;
+            filter: blur(4px);
+        }
+
+        .deco-5 {
+            width: 120px;
+            height: 120px;
+            bottom: 20%;
+            left: 8%;
+            background: radial-gradient(circle, rgba(129, 178, 154, 0.09) 0%, transparent 70%);
+            opacity: 0.4;
+            filter: blur(1px);
+        }
+
+        /* Дополнительные маленькие эллипсы-точки */
+        .deco-dot {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.3;
+        }
+
+        .deco-dot-1 {
+            width: 14px;
+            height: 14px;
+            background: var(--accent);
+            top: 15%;
+            left: 20%;
+            opacity: 0.15;
+        }
+
+        .deco-dot-2 {
+            width: 8px;
+            height: 8px;
+            background: var(--green);
+            top: 75%;
+            right: 15%;
+            opacity: 0.2;
+        }
+
+        .deco-dot-3 {
+            width: 20px;
+            height: 20px;
+            background: var(--blue);
+            bottom: 30%;
+            left: 5%;
+            opacity: 0.1;
+        }
+
+        /* ===== ОСНОВНАЯ КАРТОЧКА ===== */
+        .pomodoro-app {
+            width: 100%;
+            max-width: 560px;
+            background: var(--surface);
+            border-radius: 48px;
+            padding: 40px 30px 36px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+            transition: var(--transition);
+            overflow: hidden;
+        }
+
+        /* Декоративная полоска сверху */
+        .pomodoro-app::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 0 0 12px 12px;
+            opacity: 0.7;
+        }
+
+        /* Декоративный полупрозрачный эллипс внутри карточки */
+        .pomodoro-app::after {
+            content: "";
+            position: absolute;
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            bottom: -120px;
+            left: -80px;
+            background: radial-gradient(circle, rgba(224, 122, 95, 0.06) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ===== ЗАГОЛОВОК / СТАТУС ===== */
+        .phase-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text-soft);
+            margin-bottom: 8px;
+            background: var(--accent-soft);
+            padding: 6px 22px;
+            border-radius: 100px;
+            transition: var(--transition);
+            position: relative;
+            z-index: 1;
+        }
+
+        .phase-label.work { background: var(--accent-soft); color: #e8a08c; }
+        .phase-label.short-break { background: var(--green-soft); color: #9cccb3; }
+        .phase-label.long-break { background: var(--blue-soft); color: #9ab5ce; }
+
+        /* ===== ТАЙМЕР ===== */
+        .timer {
+            font-size: 7rem;
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: 2px;
+            color: var(--text);
+            margin: 16px 0 8px;
+            font-variant-numeric: tabular-nums;
+            transition: var(--transition);
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== ПРОГРЕСС-ИНДИКАТОР (декоративные точки) ===== */
+        .dots {
+            display: flex;
+            gap: 12px;
+            margin: 8px 0 24px;
+            flex-wrap: wrap;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--border);
+            transition: var(--transition);
+        }
+
+        .dot.completed {
+            background: var(--green);
+            transform: scale(1.1);
+            box-shadow: 0 0 8px rgba(129, 178, 154, 0.3);
+        }
+
+        .dot.current {
+            background: var(--accent);
+            box-shadow: 0 0 0 4px rgba(224, 122, 95, 0.15);
+            transform: scale(1.15);
+        }
+
+        /* ===== КНОПКИ УПРАВЛЕНИЯ ===== */
+        .controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            margin: 8px 0 6px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn {
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 600;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            outline: none;
+        }
+
+        .btn:focus-visible {
+            box-shadow: 0 0 0 4px rgba(224, 122, 95, 0.3);
+        }
+
+        .btn-main {
+            background: var(--accent);
+            color: #1e1b19;
+            padding: 16px 38px;
+            border-radius: 100px;
+            font-size: 1.2rem;
+            letter-spacing: 0.5px;
+            box-shadow: 0 8px 16px rgba(224, 122, 95, 0.2);
+            min-width: 160px;
+        }
+
+        .btn-main:hover {
+            background: #e88c74;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 22px rgba(224, 122, 95, 0.3);
+        }
+
+        .btn-main:active {
+            transform: translateY(0px);
+            box-shadow: 0 4px 10px rgba(224, 122, 95, 0.2);
+        }
+
+        .btn-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--surface-soft);
+            border: 2px solid var(--border);
+            color: var(--text);
+            font-size: 1.8rem;
+            box-shadow: var(--shadow);
+            line-height: 1;
+        }
+
+        .btn-icon:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: scale(1.04);
+        }
+
+        .btn-icon:active {
+            transform: scale(0.96);
+        }
+
+        /* ===== ПАНЕЛЬ НАСТРОЕК (выезжающая) ===== */
+        .settings-toggle {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 100;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--surface);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+            font-size: 1.6rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text);
+        }
+
+        .settings-toggle:hover {
+            transform: rotate(15deg) scale(1.04);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .settings-panel {
+            position: fixed;
+            bottom: 92px;
+            right: 24px;
+            width: 300px;
+            max-width: calc(100vw - 48px);
+            background: var(--surface);
+            border-radius: 28px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+            padding: 24px 22px 22px;
+            z-index: 99;
+            transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1), opacity 0.25s ease;
+            transform-origin: bottom right;
+            opacity: 0;
+            transform: scale(0.92) translateY(8px);
+            pointer-events: none;
+        }
+
+        .settings-panel.open {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            pointer-events: auto;
+        }
+
+        /* Декоративный эллипс в панели настроек */
+        .settings-panel::before {
+            content: "";
+            position: absolute;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            top: -40px;
+            right: -40px;
+            background: radial-gradient(circle, rgba(224, 122, 95, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .settings-panel h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--text);
+            letter-spacing: 0.3px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+        }
+
+        .settings-panel h3 span {
+            font-size: 1.2rem;
+        }
+
+        .setting-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-soft);
+            position: relative;
+        }
+
+        .setting-row label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .setting-row input[type="number"] {
+            width: 70px;
+            padding: 8px 6px;
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text);
+            text-align: center;
+            background: var(--bg);
+            transition: var(--transition);
+        }
+
+        .setting-row input[type="number"]:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: var(--surface-soft);
+        }
+
+        .setting-row input[type="range"] {
+            width: 120px;
+            accent-color: var(--accent);
+        }
+
+        .volume-value {
+            font-weight: 700;
+            color: var(--text);
+            min-width: 32px;
+            text-align: right;
+        }
+
+        .btn-test {
+            background: var(--bg);
+            border: 1.5px solid var(--border);
+            border-radius: 40px;
+            padding: 8px 16px;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-soft);
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-test:hover {
+            background: var(--accent-soft);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-test:active {
+            transform: scale(0.95);
+        }
+
+        .settings-close {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            color: var(--text-soft);
+            line-height: 1;
+            padding: 4px;
+            transition: var(--transition);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .settings-close:hover {
+            color: var(--accent);
+            background: var(--accent-soft);
+        }
+
+        /* ===== АДАПТИВ ===== */
+        @media (max-width: 480px) {
+            .pomodoro-app {
+                padding: 32px 20px 28px;
+                border-radius: 36px;
+            }
+            .timer {
+                font-size: 5rem;
+            }
+            .btn-main {
+                padding: 14px 28px;
+                font-size: 1.1rem;
+                min-width: 130px;
+            }
+            .btn-icon {
+                width: 52px;
+                height: 52px;
+                font-size: 1.5rem;
+            }
+            .controls {
+                gap: 16px;
+            }
+            .settings-panel {
+                width: 280px;
+                right: 16px;
+                bottom: 84px;
+                padding: 20px 18px;
+            }
+            .settings-toggle {
+                bottom: 16px;
+                right: 16px;
+                width: 52px;
+                height: 52px;
+            }
+            .deco-1, .deco-2 { display: none; }
+        }
+
+        /* Тонкая анимация при смене этапа */
+        @keyframes softPulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+
+        .phase-changing .timer {
+            animation: softPulse 0.6s ease;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ДЕКОРАТИВНЫЕ ЭЛЕМЕНТЫ ФОНА -->
+    <div class="deco deco-1"></div>
+    <div class="deco deco-2"></div>
+    <div class="deco deco-3"></div>
+    <div class="deco deco-4"></div>
+    <div class="deco deco-5"></div>
+    <div class="deco-dot deco-dot-1"></div>
+    <div class="deco-dot deco-dot-2"></div>
+    <div class="deco-dot deco-dot-3"></div>
+
+    <!-- ОСНОВНОЙ БЛОК ТАЙМЕРА -->
+    <main class="pomodoro-app" id="app">
+        <!-- Статус этапа -->
+        <div class="phase-label work" id="phaseLabel">Работа</div>
+
+        <!-- Сам таймер -->
+        <div class="timer" id="timerDisplay">25:00</div>
+
+        <!-- Декоративные точки (индикатор прогресса маленьких перерывов) -->
+        <div class="dots" id="dotsContainer"></div>
+
+        <!-- Кнопки: пауза / продолжить + пропуск -->
+        <div class="controls">
+            <button class="btn btn-icon" id="pauseBtn" title="Пауза / Продолжить" aria-label="Пауза / Продолжить">⏸</button>
+            <button class="btn btn-main" id="skipBtn">Пропустить</button>
+        </div>
+    </main>
+
+    <!-- КНОПКА НАСТРОЕК (в правом нижнем углу) -->
+    <button class="settings-toggle" id="settingsToggle" aria-label="Настройки" title="Настройки">⚙️</button>
+
+    <!-- ВЫЕЗЖАЮЩАЯ ПАНЕЛЬ НАСТРОЕК -->
+    <aside class="settings-panel" id="settingsPanel">
+        <button class="settings-close" id="settingsClose" aria-label="Закрыть настройки">✕</button>
+        <h3><span>⏳</span> Настройки</h3>
+
+        <!-- Рабочее время -->
+        <div class="setting-row">
+            <label>Работа (мин)</label>
+            <input type="number" id="inputWork" min="1" max="120" value="25">
+        </div>
+
+        <!-- Маленький перерыв -->
+        <div class="setting-row">
+            <label>Маленький перерыв</label>
+            <input type="number" id="inputShort" min="1" max="30" value="5">
+        </div>
+
+        <!-- Большой перерыв -->
+        <div class="setting-row">
+            <label>Большой перерыв</label>
+            <input type="number" id="inputLong" min="1" max="60" value="15">
+        </div>
+
+        <!-- Число маленьких перерывов до большого -->
+        <div class="setting-row">
+            <label>Маленьких до большого</label>
+            <input type="number" id="inputCycles" min="1" max="10" value="3">
+        </div>
+
+        <!-- Громкость звука -->
+        <div class="setting-row">
+            <label>Громкость</label>
+            <input type="range" id="volumeRange" min="0" max="1" step="0.01" value="0.6">
+            <span class="volume-value" id="volumeValue">60%</span>
+        </div>
+
+        <!-- Кнопка тестирования звука -->
+        <div class="setting-row" style="justify-content: flex-end; margin-bottom: 0; margin-top: 6px;">
+            <button class="btn-test" id="testSoundBtn">🔊 Проверить звук</button>
+        </div>
+    </aside>
+
+    <!-- СКРИПТ -->
+    <script>
+        (function() {
+            // ---------- СОСТОЯНИЕ ----------
+            const state = {
+                // Настройки
+                workMin: 25,
+                shortMin: 5,
+                longMin: 15,
+                cyclesBeforeLong: 3,
+                volume: 0.6,
+                // Текущий этап
+                phase: 'work',          // 'work' | 'short' | 'long'
+                timeLeft: 25 * 60,      // в секундах
+                isRunning: false,
+                // Счётчик завершённых маленьких перерывов подряд
+                shortBreaksDone: 0,
+                // Флаг, чтобы не запускать несколько таймеров
+                intervalId: null,
+            };
+
+            // ---------- DOM ----------
+            const phaseLabel = document.getElementById('phaseLabel');
+            const timerDisplay = document.getElementById('timerDisplay');
+            const dotsContainer = document.getElementById('dotsContainer');
+            const pauseBtn = document.getElementById('pauseBtn');
+            const skipBtn = document.getElementById('skipBtn');
+            const settingsToggle = document.getElementById('settingsToggle');
+            const settingsPanel = document.getElementById('settingsPanel');
+            const settingsClose = document.getElementById('settingsClose');
+
+            const inputWork = document.getElementById('inputWork');
+            const inputShort = document.getElementById('inputShort');
+            const inputLong = document.getElementById('inputLong');
+            const inputCycles = document.getElementById('inputCycles');
+            const volumeRange = document.getElementById('volumeRange');
+            const volumeValue = document.getElementById('volumeValue');
+            const testSoundBtn = document.getElementById('testSoundBtn');
+
+            // ---------- АУДИО ----------
+            let audioCtx = null;
+            let testAudioCtx = null;
+
+            function getAudioContext() {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                return audioCtx;
+            }
+
+            function playFinishSound(volume = state.volume) {
+                try {
+                    const ctx = getAudioContext();
+                    if (ctx.state === 'suspended') ctx.resume();
+                    const now = ctx.currentTime;
+                    const osc1 = ctx.createOscillator();
+                    const osc2 = ctx.createOscillator();
+                    const gainNode = ctx.createGain();
+
+                    osc1.type = 'sine';
+                    osc2.type = 'sine';
+                    osc1.frequency.value = 523.25;
+                    osc2.frequency.value = 659.25;
+
+                    gainNode.gain.setValueAtTime(volume * 0.5, now);
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+
+                    osc1.connect(gainNode);
+                    osc2.connect(gainNode);
+                    gainNode.connect(ctx.destination);
+
+                    osc1.start(now);
+                    osc2.start(now);
+                    osc1.stop(now + 0.55);
+                    osc2.stop(now + 0.55);
+                } catch (e) {
+                    console.warn('Звук не воспроизведён:', e);
+                }
+            }
+
+            function playTestSound(volume = state.volume) {
+                try {
+                    if (!testAudioCtx) {
+                        testAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    }
+                    const ctx = testAudioCtx;
+                    if (ctx.state === 'suspended') ctx.resume();
+                    const now = ctx.currentTime;
+                    const osc = ctx.createOscillator();
+                    const gainNode = ctx.createGain();
+
+                    osc.type = 'triangle';
+                    osc.frequency.value = 880;
+
+                    gainNode.gain.setValueAtTime(volume * 0.4, now);
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+
+                    osc.connect(gainNode);
+                    gainNode.connect(ctx.destination);
+
+                    osc.start(now);
+                    osc.stop(now + 0.45);
+                } catch (e) {
+                    console.warn('Тестовый звук не воспроизведён:', e);
+                }
+            }
+
+            // ---------- ВСПОМОГАТЕЛЬНЫЕ ----------
+            function formatTime(seconds) {
+                const m = Math.floor(seconds / 60);
+                const s = seconds % 60;
+                return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+            }
+
+            function updateDisplay() {
+                timerDisplay.textContent = formatTime(state.timeLeft);
+
+                if (state.phase === 'work') {
+                    phaseLabel.textContent = 'Работа';
+                    phaseLabel.className = 'phase-label work';
+                } else if (state.phase === 'short') {
+                    phaseLabel.textContent = 'Маленький перерыв';
+                    phaseLabel.className = 'phase-label short-break';
+                } else {
+                    phaseLabel.textContent = 'Большой перерыв';
+                    phaseLabel.className = 'phase-label long-break';
+                }
+
+                pauseBtn.textContent = state.isRunning ? '⏸' : '▶';
+                pauseBtn.title = state.isRunning ? 'Пауза' : 'Продолжить';
+
+                renderDots();
+            }
+
+            function renderDots() {
+                const total = state.cyclesBeforeLong;
+                const completed = state.shortBreaksDone;
+                dotsContainer.innerHTML = '';
+
+                for (let i = 0; i < total; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = 'dot';
+                    if (i < completed) {
+                        dot.classList.add('completed');
+                    }
+                    if (state.phase === 'short' && i === completed && completed < total) {
+                        dot.classList.add('current');
+                    }
+                    if (state.phase === 'long') {
+                        dot.classList.add('completed');
+                    }
+                    dotsContainer.appendChild(dot);
+                }
+            }
+
+            function getPhaseDuration(phase) {
+                if (phase === 'work') return state.workMin * 60;
+                if (phase === 'short') return state.shortMin * 60;
+                return state.longMin * 60;
+            }
+
+            // ---------- ЛОГИКА ПЕРЕХОДА ЭТАПОВ ----------
+            // Возвращает следующий этап и обновляет счётчик, если нужно.
+            // Параметр isSkip — если true, значит этап пропущен (не завершился по времени).
+            // В обоих случаях логика одинакова: считаем, что этап завершён.
+            function advancePhase() {
+                let nextPhase;
+
+                if (state.phase === 'work') {
+                    // После работы — маленький перерыв (большой только после нужного числа маленьких)
+                    nextPhase = 'short';
+                } else if (state.phase === 'short') {
+                    // Завершился маленький перерыв
+                    state.shortBreaksDone++;
+                    if (state.shortBreaksDone >= state.cyclesBeforeLong) {
+                        // Достигли нужного количества маленьких — следующий большой
+                        nextPhase = 'long';
+                    } else {
+                        // Иначе снова работа
+                        nextPhase = 'work';
+                    }
+                } else { // long
+                    // Завершился большой перерыв — сбрасываем счётчик
+                    state.shortBreaksDone = 0;
+                    nextPhase = 'work';
+                }
+
+                state.phase = nextPhase;
+                state.timeLeft = getPhaseDuration(nextPhase);
+                updateDisplay();
+            }
+
+            // ---------- ТАЙМЕР ----------
+            function startTimer() {
+                if (state.isRunning) return;
+                if (state.timeLeft <= 0) {
+                    // Если время вышло, переключаем этап
+                    advancePhase();
+                }
+
+                state.isRunning = true;
+                updateDisplay();
+
+                state.intervalId = setInterval(() => {
+                    if (state.timeLeft <= 0) {
+                        // Время вышло
+                        clearInterval(state.intervalId);
+                        state.intervalId = null;
+                        state.isRunning = false;
+
+                        // Звук
+                        playFinishSound(state.volume);
+
+                        // Переключаем этап
+                        advancePhase();
+
+                        // Автоматически продолжаем следующий этап (как требует ТЗ: таймер должен продолжаться)
+                        // Небольшая задержка, чтобы звук не перебивался
+                        setTimeout(() => {
+                            if (!state.isRunning) {
+                                startTimer();
+                            }
+                        }, 500);
+
+                    } else {
+                        state.timeLeft--;
+                        timerDisplay.textContent = formatTime(state.timeLeft);
+                    }
+                }, 1000);
+            }
+
+            function stopTimer() {
+                if (state.intervalId) {
+                    clearInterval(state.intervalId);
+                    state.intervalId = null;
+                }
+                state.isRunning = false;
+                updateDisplay();
+            }
+
+            function togglePause() {
+                if (state.isRunning) {
+                    stopTimer();
+                } else {
+                    if (state.timeLeft <= 0) {
+                        // Если время 0, переключаем этап и запускаем
+                        advancePhase();
+                    }
+                    startTimer();
+                }
+            }
+
+            // ---------- ПРОПУСК ЭТАПА ----------
+            function skipPhase() {
+                // Останавливаем текущий таймер
+                stopTimer();
+
+                // Переключаем этап (как если бы он завершился)
+                advancePhase();
+
+                // Запускаем новый этап сразу (таймер должен продолжаться)
+                startTimer();
+            }
+
+            // ---------- НАСТРОЙКИ ----------
+            function applySettingsFromInputs() {
+                let work = parseInt(inputWork.value, 10);
+                let short = parseInt(inputShort.value, 10);
+                let long = parseInt(inputLong.value, 10);
+                let cycles = parseInt(inputCycles.value, 10);
+
+                if (isNaN(work) || work < 1) work = 25;
+                if (isNaN(short) || short < 1) short = 5;
+                if (isNaN(long) || long < 1) long = 15;
+                if (isNaN(cycles) || cycles < 1) cycles = 3;
+
+                work = Math.min(work, 120);
+                short = Math.min(short, 30);
+                long = Math.min(long, 60);
+                cycles = Math.min(cycles, 10);
+
+                inputWork.value = work;
+                inputShort.value = short;
+                inputLong.value = long;
+                inputCycles.value = cycles;
+
+                state.workMin = work;
+                state.shortMin = short;
+                state.longMin = long;
+                state.cyclesBeforeLong = cycles;
+
+                // Перерисовываем точки
+                renderDots();
+
+                // Если текущий этап и таймер не запущен, можно обновить оставшееся время?
+                // Но лучше не сбрасывать текущий прогресс. Оставим как есть.
+            }
+
+            // ---------- ИНИЦИАЛИЗАЦИЯ ----------
+            function init() {
+                state.timeLeft = state.workMin * 60;
+                updateDisplay();
+
+                pauseBtn.addEventListener('click', togglePause);
+                skipBtn.addEventListener('click', skipPhase);
+
+                settingsToggle.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    settingsPanel.classList.toggle('open');
+                });
+
+                settingsClose.addEventListener('click', () => {
+                    settingsPanel.classList.remove('open');
+                });
+
+                document.addEventListener('click', (e) => {
+                    if (settingsPanel.classList.contains('open') &&
+                        !settingsPanel.contains(e.target) &&
+                        e.target !== settingsToggle &&
+                        !settingsToggle.contains(e.target)) {
+                        settingsPanel.classList.remove('open');
+                    }
+                });
+
+                settingsPanel.addEventListener('click', (e) => e.stopPropagation());
+
+                inputWork.addEventListener('change', applySettingsFromInputs);
+                inputShort.addEventListener('change', applySettingsFromInputs);
+                inputLong.addEventListener('change', applySettingsFromInputs);
+                inputCycles.addEventListener('change', applySettingsFromInputs);
+
+                volumeRange.addEventListener('input', (e) => {
+                    const val = parseFloat(e.target.value);
+                    state.volume = val;
+                    volumeValue.textContent = Math.round(val * 100) + '%';
+                });
+
+                testSoundBtn.addEventListener('click', () => {
+                    state.volume = parseFloat(volumeRange.value);
+                    playTestSound(state.volume);
+                });
+
+                // Разблокировка аудио по первому клику
+                document.body.addEventListener('click', () => {
+                    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+                    if (testAudioCtx && testAudioCtx.state === 'suspended') testAudioCtx.resume();
+                }, { once: false });
+
+                // Значения по умолчанию
+                inputWork.value = state.workMin;
+                inputShort.value = state.shortMin;
+                inputLong.value = state.longMin;
+                inputCycles.value = state.cyclesBeforeLong;
+                volumeRange.value = state.volume;
+                volumeValue.textContent = Math.round(state.volume * 100) + '%';
+
+                renderDots();
+            }
+
+            init();
+
+            window.addEventListener('click', function unlockAudio() {
+                if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+                if (testAudioCtx && testAudioCtx.state === 'suspended') testAudioCtx.resume();
+            }, { once: true });
+
+        })();
+    </script>
+</body>
+</html>
